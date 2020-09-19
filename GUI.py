@@ -2,26 +2,34 @@
 from tkinter import *
 from tkinter.ttk import * 
 from record import *
-from IBM import *
+from Convert import *
+import threading
+
 
 class GUI():
-    
     def __init__(self):
-        # Change this to change the filename input
-        self.flacFilename = "Ctf"
+        # Window dimensions
+        self.windowWidth = 600
+        self.windowHeight = 500
 
-        self.wavFilename = "Test"
+        # Flac file to be converted to text
+        self.flacFilename = "Test2"
 
+        # Wav file to be created and converted
+        self.wavFilename = "Test2"
+
+        # Duration of recording
+        self.duration = 1
+        
         # Starts the application
         self.runGUI()
-
-
 
     # Starts the GUI
     def runGUI(self):
         # Create the screen
-        gui = Tk(className='Quizzoom')
-        gui.geometry("500x500")
+        gui = Tk()
+        gui.title("Quizzoom")
+        gui.minsize(self.windowWidth, self.windowHeight)
 
         # Generate the button style
         style = Style()
@@ -31,9 +39,11 @@ class GUI():
         recordButton = Button(gui, text = "Record Audio", style = 'TButton', command = self.recordAudio)
         recordButton.pack()
 
+        # Button to playback recording
         playbackButton = Button(gui, text = "Playback Audio", style = 'TButton', command = self.playbackAudio)
         playbackButton.pack()
 
+        # Convert wav to flac
         flacConvertButton = Button(gui, text = "Convert wav to flac", style = 'TButton', command = self.runflacConvert)
         flacConvertButton.pack()
 
@@ -41,34 +51,39 @@ class GUI():
         flacToTextButton = Button(gui, text = "Flac to Text", style = 'TButton', command = self.runIBMconvert)
         flacToTextButton.pack()
 
+        # Runs convert to string
+        stsButton = Button(gui, text = "String to Sentences", style = 'TButton', command = self.convertStringToSentences)
+        stsButton.pack()
+
+        # Creates a text input box
+        # self.text = StringVar()
+        # textEntered = Entry(gui, width = 15, textvariable = self.text)
+        # textEntered.pack()
+
         # Runs the screen 
         gui.mainloop()
 
-
-
     # Action to perform when the button is clicked
     def recordAudio(self):
-        # Change this to change the duration of the recording
-        duration = 1
-        # Change this to change which file you are reading sound to
-        filename = "TestRecord"
-
         # Starts the recording
-        self.myarray = record(duration, filename)
-
+        self.myarray = record(self.duration, self.wavFilename)
 
 
     # Playback the audio which was previously recorded
+    # Can only play audio after clicking record
     def playbackAudio(self):
         playback(self.myarray)
-
 
 
     # Converts a specified audio file into its text form.
     # File must be of form .flac for this to run
     def runIBMconvert(self):
-        txtToSpeech(self.flacFilename)
+        convertIBM(self.flacFilename)
 
+
+    # Takes in an input text file and rewrites it to have different sentences.
+    def convertStringToSentences(self):
+        convertSTS(self.flacFilename)
 
 
     # Converts a wav file to a flac file. 

@@ -30,5 +30,5 @@ def playback(myarray):
 
 # Converts a .wav file to .flac
 def wavToFlac(filename):
-    wav, samplerate = sf.read(filename + '.wav')
-    sf.write(filename + '.flac', wav, samplerate)
+    wav, samplerate = sf.read("./WavFiles/" + filename + '.wav')
+    sf.write("./FlacFiles/" + filename + '.flac', wav, samplerate)

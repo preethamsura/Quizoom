@@ -2,7 +2,8 @@ import json
 from os.path import join, dirname 
 from ibm_watson import SpeechToTextV1 
 from ibm_watson.websocket import RecognizeCallback, AudioSource 
-from ibm_cloud_sdk_core.authenticators import IAMAuthenticator 
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+
 
 def txtToSpeech(filename): 
     authenticator = IAMAuthenticator('lnnbtj4cHOBqYk1NAiDdA8psSVXslJCi3cXHbFgYwK2-')  
@@ -20,12 +21,14 @@ def txtToSpeech(filename):
                             audio=audio_file, 
                             content_type='audio/flac',    
                             model='en-US_NarrowbandModel', 
-                        continuous=True).get_result(), indent=2)) 
+                            continuous=True,
+                            smart_formatting=True).get_result(), indent=2)) 
     
     # Stores the transcribed text 
-    str = "" 
+    string = "" 
     
     while bool(dic.get('results')): 
-        str = dic.get('results').pop().get('alternatives').pop().get('transcript')+str[:] 
-        
-    print(str) 
+        string = dic.get('results').pop().get('alternatives').pop().get('transcript')+string[:] 
+    
+    print("Completed Conversion")
+    return string
