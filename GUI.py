@@ -4,7 +4,7 @@ from tkinter.ttk import *
 from record import *
 from Convert import *
 import threading
-
+from GenerateQuestions import *
 
 class GUI():
     def __init__(self):
@@ -13,10 +13,7 @@ class GUI():
         self.windowHeight = 500
 
         # Flac file to be converted to text
-        self.flacFilename = "Test2"
-
-        # Wav file to be created and converted
-        self.wavFilename = "Test2"
+        self.filename = "airplane"
 
         # Duration of recording
         self.duration = 1
@@ -54,6 +51,10 @@ class GUI():
         # Runs convert to string
         stsButton = Button(gui, text = "String to Sentences", style = 'TButton', command = self.convertStringToSentences)
         stsButton.pack()
+        
+        # Take the sentences and call GenerateQuestions
+        gqButton = Button(gui, text = "Make Questions", style = 'TButton', command = self.makeQuestions)
+        gqButton.pack()
 
         # Creates a text input box
         # self.text = StringVar()
@@ -66,7 +67,7 @@ class GUI():
     # Action to perform when the button is clicked
     def recordAudio(self):
         # Starts the recording
-        self.myarray = record(self.duration, self.wavFilename)
+        self.myarray = record(self.duration, self.filename)
 
 
     # Playback the audio which was previously recorded
@@ -78,14 +79,19 @@ class GUI():
     # Converts a specified audio file into its text form.
     # File must be of form .flac for this to run
     def runIBMconvert(self):
-        convertIBM(self.flacFilename)
+        convertIBM(self.filename)
 
 
     # Takes in an input text file and rewrites it to have different sentences.
     def convertStringToSentences(self):
-        convertSTS(self.flacFilename)
+        convertSTS(self.filename)
 
 
     # Converts a wav file to a flac file. 
     def runflacConvert(self):
-        wavToFlac(self.wavFilename)
+        wavToFlac(self.filename)
+
+
+    # Creates question and answer pairs
+    def makeQuestions(self):
+        generateQuestions(self.filename)

@@ -1,46 +1,52 @@
 from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize 
-from summarizer import Summarizer
+from nltk.tokenize import sent_tokenize, word_tokenize 
+from rake_nltk import Rake
 
-class GenerateQuestions():
-    def __init__(self):
-        self.filename = "blah.txt"
-        
-   
-   def extractAnswers(qas, doc):
-    answers = []
-
-    senStart = 0
-    senId = 0
-
-    for sentence in doc.sents:
-        senLen = len(sentence.text)
-
-        for answer in qas:
-            answerStart = answer['answers'][0]['answer_start']
-
-            if (answerStart >= senStart and answerStart < (senStart + senLen)):
-                answers.append({'sentenceId': senId, 'text': answer['answers'][0]['text']})
-
-        senStart += senLen
-        senId += 1
+# Creates the questions and prints them to terminal
+def generateQuestions(filename):
+    # Convert the filename so that it gets the right file
+    filename = "./TextFiles/" + filename + "sentences.txt"
     
-    return answers
+    # Get the scored keys from the sentences
+    keys = generateKeywords(filename)
+    print("Printing out Keys:")
+    print(keys)
+    print("")
     
-    def removeStopwords(self, filename):
-        f = open(filename, "r+")
-        text = f.read()
-        stop_words = set(stopwords.words('english')) 
-        word_tokens = word_tokenize(text)
-        filtered_sentence = [w for w in word_tokens if not w in stop_words] 
-        filtered_string = ""
-        for st in filtered_sentence:
-            filtered_string += st
-        f.write(filtered_string)
+    # Processes the keys and attempts to create questions from those keys
+    print("Printed Questions:")
+    print(processInput(filename, keys))
+    print("")
 
-    # Rake implementation
-    def generateKeywords(self, filename):
+# Takes text input from file and generates questions by extracting keywords and filling with blanks. 
+def processInput(filename, keys):
+    f = open(filename, "r")
+    text = f.read()
+    sentenceList = sent_tokenize(text)
+    questionList = []
+    for sentence in sentenceList:
+        keyword = ""
+        words = sentence.split(" ")
+        for word in words:
+            if word in keys:
+                keyword = word
+        if (keyword != ""):
+            arr = sentence.split(keyword)
+            question = arr[0] + " _____ " + arr[1] + "?"
+            answer = keyword
+            pair = (question, answer)
+            questionList.append(pair)
+    return questionList
+
+
+# Rake implementation, generates keywords with scores based on frequency
+def generateKeywords(filename):
+    f = open(filename, "r")
+    r = Rake(min_length=1, max_length=3)
+    r.extract_keywords_from_text(f.read())
+    with_score = r.get_ranked_phrases_with_scores()
+    #for (score, phrase) in 
+    #modify keys to remove all below 2
+    return r.get_ranked_phrases()
         
-         
-
-
+        
