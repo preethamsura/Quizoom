@@ -1,6 +1,6 @@
 # Import the other files
 import record
-import GUI
+from GUI import *
 
 # Starting up the different parts of the program.
 def main():
@@ -8,7 +8,7 @@ def main():
     print("Running Quizzoom")
 
     # Creates the GUI
-    GUI.runGUI()
+    g = GUI()
 
 
 # Start running the program when this file is called.
