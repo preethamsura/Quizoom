@@ -4,7 +4,7 @@ from ibm_watson import SpeechToTextV1
 from ibm_watson.websocket import RecognizeCallback, AudioSource 
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator 
 
-def txtToSpeech(): 
+def txtToSpeech(filename): 
     authenticator = IAMAuthenticator('lnnbtj4cHOBqYk1NAiDdA8psSVXslJCi3cXHbFgYwK2-')  
     service = SpeechToTextV1(authenticator = authenticator) 
         
@@ -12,7 +12,7 @@ def txtToSpeech():
     
     # Insert local mp3 file path in 
     # place of 'LOCAL FILE PATH'   /FlacToQuestion/audio-file.flac
-    with open(join(dirname('__file__'), 'audio-file.flac'),  
+    with open(join(dirname('__file__'), filename + '.flac'),  
             'rb') as audio_file: 
             dic = json.loads( 
                     json.dumps( 
