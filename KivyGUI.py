@@ -26,10 +26,10 @@ class WelcomeScreen(Screen):
 
     def __init__(self, **kwargs):
         super(Screen, self).__init__(**kwargs)
-        Clock.schedule_once(self.start_pulsing, 8)
+        Clock.schedule_once(self.start_pulsing, 0)
 
     def start_pulsing(self, *args):
-        anim = Animation(bg_color=[145/255,183/255,250/255,1]) + Animation(bg_color=[176/255,145/255,250/255,1])
+        anim = Animation(duration=4, bg_color=[145/255,183/255,250/255,1]) + Animation(duration=4, bg_color=[176/255,145/255,250/255,1])
         anim.repeat = True
         anim.start(self)
     pass
@@ -41,11 +41,11 @@ class RecordScreen(Screen):
     def __init__(self, **kwargs):
         super(Screen, self).__init__(**kwargs)
         self.recorded = False
-        Clock.schedule_once(self.start_pulsing, 8)
+        Clock.schedule_once(self.start_pulsing, 0)
 
     # Changing background colors
     def start_pulsing(self, *args):
-        anim = Animation(bg_color=[3/255,252/255,244/255,1]) + Animation(bg_color=[3/255,252/255,152/255,1])
+        anim = Animation(duration=4, bg_color=[3/255,252/255,244/255,1]) + Animation(duration=4, bg_color=[3/255,252/255,152/255,1])
         anim.repeat = True
         anim.start(self)
 
@@ -96,7 +96,7 @@ class QuizScreen(Screen):
 
     def __init__(self, **kwargs):
         super(Screen, self).__init__(**kwargs)
-        Clock.schedule_once(self.start_pulsing, 12)
+        Clock.schedule_once(self.start_pulsing, 0)
         Clock.schedule_interval(self.update, .5)
         self.questions = []
         self.answers = []
@@ -110,7 +110,7 @@ class QuizScreen(Screen):
         self.inputAnswer()
 
     def start_pulsing(self, *args):
-        anim = Animation(bg_color=[145/255,183/255,250/255,1]) + Animation(bg_color=self.color_arr)
+        anim = Animation(duration=4, bg_color=[145/255,183/255,250/255,1]) + Animation(duration=4, bg_color=self.color_arr)
         anim.repeat = True
         anim.start(self)
 
