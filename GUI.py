@@ -3,8 +3,8 @@ from tkinter import *
 from tkinter.ttk import * 
 from record import *
 from Convert import *
-from SpecialThread import *
-#from GenerateQuestions import *
+import threading
+from GenerateQuestions import *
 
 class GUI():
     def __init__(self):
@@ -13,14 +13,17 @@ class GUI():
         self.windowHeight = 500
 
         # Flac file to be converted to text
-        self.filename = "Airplane"
+        self.filename = "Audio"
 
         # Duration of recording
         self.duration = 10
         
-        # Create the thread for recording audio
-        self.recordThread = SpecialThread(target = record, args = (self.duration, self.filename))
+        # Create the thread for recording audio and converting it to a flac file.
+        self.recordThread = threading.Thread(target = record, args = (self.duration, self.filename))
         self.recordNum = -1
+
+        # Create IBMConvert thread
+        self.IBMThread = threading.Thread(target = convertIBM, args = (self.filename))
 
         # Starts the application
         self.runGUI()
@@ -40,10 +43,6 @@ class GUI():
         recordButton = Button(gui, text = "Record Audio", style = 'TButton', command = self.recordAudio)
         recordButton.pack()
 
-        # Convert wav to flac
-        flacConvertButton = Button(gui, text = "Convert wav to flac", style = 'TButton', command = self.runflacConvert)
-        flacConvertButton.pack()
-
         # Create the button which converts the audio from speech to text
         flacToTextButton = Button(gui, text = "Flac to Text", style = 'TButton', command = self.runIBMconvert)
         flacToTextButton.pack()
@@ -53,8 +52,8 @@ class GUI():
         stsButton.pack()
         
         # Take the sentences and call GenerateQuestions
-        #gqButton = Button(gui, text = "Make Questions", style = 'TButton', command = self.makeQuestions)
-        #gqButton.pack()
+        gqButton = Button(gui, text = "Make Questions", style = 'TButton', command = self.makeQuestions)
+        gqButton.pack()
 
         # Creates a text input box
         # self.text = StringVar()
@@ -71,11 +70,14 @@ class GUI():
             self.recordThread.start()
             self.recordNum += 1
         else:
+            # If the first already is currently running, don't do anything 
             if (self.recordThread.is_alive()):
                 print("Audio is already being recorded.")
+            
+            # If the thread stopped, create a new thread which will store a new wav file.
             else:
                 self.recordThread.join()
-                self.recordThread = SpecialThread(target = record, args = (self.duration, self.filename + str(self.recordNum)))
+                self.recordThread = threading.Thread(target = record, args = (self.duration, self.filename + str(self.recordNum)))
                 self.recordThread.start()
                 self.recordNum += 1
 
@@ -90,11 +92,6 @@ class GUI():
         convertSTS(self.filename)
 
 
-    # Converts a wav file to a flac file. 
-    def runflacConvert(self):
-        wavToFlac(self.filename)
-
-
     # Creates question and answer pairs
-    #def makeQuestions(self):
-    #    generateQuestions(self.filename)
+    def makeQuestions(self):
+        generateQuestions(self.filename)r

@@ -70,13 +70,12 @@ def generateKeywords2(filename):
     damper = 0.85
     convg_thresh = 1e-5
     iterations = 10
-    weights = None
+    weights = dict()
 
     for word in STOP_WORDS:
         nlp.vocab[word].is_stop = True
 
     
-
     f = open(filename, "r")
     transcript = nlp(f.read())
     word_types = ['NOUN', 'PROPN', 'VERB']
@@ -96,13 +95,21 @@ def generateKeywords2(filename):
     prev_rank = 0
     for i in range(10):
         intermediate_weights = (1 - damper) + damper * np.dot(arr, intermediate_weights)
-        if abs(prev_rank - sum(intermediate_weights)) < 
-
-
-
-def getKeyw():
-    weights = 
-
+        if abs(prev_rank - sum(intermediate_weights)) < convg_thresh:
+            break
+        else:
+            prev_rank = sum(intermediate_weights)
+    
+    for word, num in dictionary.items():
+        weights[word] = intermediate_weights[num]
+    weights = OrderedDict(sorted(weights.items(), key=lambda x: x[1], reverse=True))
+    i = 0
+    for pair in weights.items():
+        if (i <= 10):
+            print(str(pair[0]) + ': ' + str(pair[1]))
+            i += 1
+        else:
+            break
 
 def matrix(dictionary, pairs):
     size = len(dictionary)
@@ -114,7 +121,7 @@ def matrix(dictionary, pairs):
     
     col_sum = np.sum(arr, axis=0)
     arr_norm = np.divide(arr, col_sum, where=col_sum!=0)
-    retrun arr_norm
+    return arr_norm
 
     
 
@@ -138,5 +145,7 @@ def pairWords(window, text):
                     pair = (word, sentence[j])
                     if pair not in pairs:
                         pairs.append(pair)
+                else:
+                    break
             i += 1
     return pairs

@@ -25,6 +25,8 @@ def record(duration, filename):
     
     print("Finished recording. File saved in " + filename + ".wav")
 
+    wavToFlac(filename)
+
 # Plays back an audio file once recorded
 def playback(myarray):
     fs = 44100
@@ -32,5 +34,9 @@ def playback(myarray):
 
 # Converts a .wav file to .flac
 def wavToFlac(filename):
+    print("Started convert wav to flac")
+
     wav, samplerate = sf.read("./WavFiles/" + filename + '.wav')
     sf.write("./FlacFiles/" + filename + '.flac', wav, samplerate)
+
+    print("Finished converting wav to flac")
