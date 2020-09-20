@@ -18,7 +18,7 @@ import threading
     
 # Default filename which is going to be saved
 filename = "Quizoom"
-threads = [1]
+threads = [4]
 
 # Welcome screen. Click next to move to the actual application.
 class WelcomeScreen(Screen):
@@ -36,7 +36,7 @@ class WelcomeScreen(Screen):
 
 # Screen where you can record the audio. The user can input a select time to record audio.
 class RecordScreen(Screen):
-    bg_color = ObjectProperty([145/255,183/255,250/255,1])
+    bg_color = ObjectProperty([3/255,252/255,244/255,1])
     
     def __init__(self, **kwargs):
         super(Screen, self).__init__(**kwargs)
@@ -45,7 +45,7 @@ class RecordScreen(Screen):
 
     # Changing background colors
     def start_pulsing(self, *args):
-        anim = Animation(bg_color=[145/255,183/255,250/255,1]) + Animation(bg_color=[176/255,145/255,250/255,1])
+        anim = Animation(bg_color=[3/255,252/255,244/255,1]) + Animation(bg_color=[3/255,252/255,152/255,1])
         anim.repeat = True
         anim.start(self)
 
@@ -73,7 +73,7 @@ class RecordScreen(Screen):
 
         # Creates all the threads which will run during this program
         numFiles = int(self.runDuration / self.duration) + 1
-        for i in range(numFiles):
+        for i in range(0):
             # Adds the index to the filename. 
             newFilename = filename + str(i)
 
@@ -104,12 +104,13 @@ class QuizScreen(Screen):
         self.text = ""
         self.read = 1
         self.questionCount = 1
+        self.color_arr = [176/255,145/255,250/255,1]
     
     def on_pre_enter(self):
         self.inputAnswer()
 
     def start_pulsing(self, *args):
-        anim = Animation(bg_color=[145/255,183/255,250/255,1]) + Animation(bg_color=[176/255,145/255,250/255,1])
+        anim = Animation(bg_color=[145/255,183/255,250/255,1]) + Animation(bg_color=self.color_arr)
         anim.repeat = True
         anim.start(self)
 
@@ -134,12 +135,12 @@ class QuizScreen(Screen):
         # Printing correct
         if self.answers[self.current] == (response):
             self.ids.status.text = "Correct!"
-            bg_color=[48/255, 252/255, 3/255, 1]
+            self.color_arr=[48/255, 252/255, 3/255, 1]
         
         # Printing incorrect
         else:
             self.ids.status.text = "Incorrect :("
-            bg_color=[252/255, 53/255, 3/255, 1]
+            self.color_arr=[252/255, 53/255, 3/255, 1]
 
     def parseText(self, text):
         words = text.split(' ')
