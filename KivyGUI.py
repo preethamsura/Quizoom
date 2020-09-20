@@ -18,6 +18,9 @@ import threading
     
 # Default filename which is going to be saved
 filename = "Quizoom"
+# Using multiple threads for realtime analysis.
+# threads[0] represents the total number of files which have already been read
+# threads[1...n] represent the different threads per each fiel
 threads = [1]
 
 # Welcome screen. Click next to move to the actual application.
@@ -98,12 +101,21 @@ class QuizScreen(Screen):
         super(Screen, self).__init__(**kwargs)
         Clock.schedule_once(self.start_pulsing, 0)
         Clock.schedule_interval(self.update, .5)
+        # Arrays which will store question/answer pairs
         self.questions = []
         self.answers = []
+
+        # Current question number
         self.current = 0
+
+        # Question text
         self.text = ""
         self.read = 1
+
+        # Number of questions which have been generated up till this point
         self.questionCount = 1
+
+        # Background colors
         self.color_arr = [176/255,145/255,250/255,1]
     
     def on_pre_enter(self):
@@ -114,10 +126,12 @@ class QuizScreen(Screen):
         anim.repeat = True
         anim.start(self)
 
-    # Update the GUI with new values every half second
+    # Update the GUI with new values every half second based on user input
     def update(self, *args):
+        # Adds the questions if it has been generated
         if (len(self.questions) == 0):
             self.text = ""
+        # Moves us to the right question slide
         else:
             self.text = self.questions[self.current]
         self.ids.question.text = self.parseText(self.text)
@@ -142,6 +156,8 @@ class QuizScreen(Screen):
             self.ids.status.text = "Incorrect :("
             self.color_arr=[252/255, 53/255, 3/255, 1]
 
+    # Reads through the text and splits into multiple lines based on
+    # number of words
     def parseText(self, text):
         words = text.split(' ')
         num = 0
@@ -154,11 +170,13 @@ class QuizScreen(Screen):
                 num = 0
         return output
 
+    # Move us to the next question if there are any
     def nextQ(self):
         if self.current != len(self.questions) - 1:
             self.ids.status.text = ""
             self.current += 1
 
+    # Moves us to the previous question if there are any
     def prevQ(self):
         if self.current != 0:
             self.ids.status.text = ""
@@ -167,11 +185,13 @@ class QuizScreen(Screen):
     # Takes in quiz questions as they come. These will be updated as you record.
     def inputAnswer(self):
         numTotal = threads[0]
+        # Reads any new incoming files which are written in real time
         for j in range(self.read, numTotal):
             readFile = "./QuestionFiles/" + filename  + str(j - 1) + ".txt"
             file1 = open(readFile, "r") 
             maxN = int(file1.readline())
             self.opac = 0
+            # Reads all the questions/answers in the documents
             for i in range(maxN):
                 question = "Question " + str(self.questionCount) + ": " + file1.readline()[12:].capitalize()
                 self.questions.append(question)

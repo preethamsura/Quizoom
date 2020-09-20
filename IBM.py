@@ -4,11 +4,11 @@ from ibm_watson import SpeechToTextV1
 from ibm_watson.websocket import RecognizeCallback, AudioSource 
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
-
+# Runs our .flac audio files through IBM speech to text API to output the converted String
 def txtToSpeech(filename): 
+    # API Details
     authenticator = IAMAuthenticator('lnnbtj4cHOBqYk1NAiDdA8psSVXslJCi3cXHbFgYwK2-')  
     service = SpeechToTextV1(authenticator = authenticator) 
-        
     service.set_service_url('https://api.us-south.speech-to-text.watson.cloud.ibm.com/instances/b19014e0-909a-475d-8989-02b8b197f15c') 
     
     # Insert local mp3 file path in 
