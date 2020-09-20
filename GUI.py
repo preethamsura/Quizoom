@@ -13,17 +13,18 @@ class GUI():
         self.windowHeight = 500
 
         # Flac file to be converted to text
-        self.filename = "Audio"
+        self.filename = "random"
 
         # Duration of recording
-        self.duration = 10
+        self.duration = 20
         
         # Create the thread for recording audio and converting it to a flac file.
         self.recordThread = threading.Thread(target = record, args = (self.duration, self.filename))
-        self.recordNum = -1
+        self.recordNum = 0
 
         # Create IBMConvert thread
-        self.IBMThread = threading.Thread(target = convertIBM, args = (self.filename))
+        self.IBMThread = threading.Thread(target = convertIBM, args = (None, self.filename))
+        self.IBMNum = -1
 
         # Starts the application
         self.runGUI()
@@ -84,7 +85,22 @@ class GUI():
     # Converts a specified audio file into its text form.
     # File must be of form .flac for this to run
     def runIBMconvert(self):
-        convertIBM(self.filename)
+        if (self.IBMNum >= self.recordNum):
+            print("You do not have any recordings which need to be converted.")
+        elif (self.IBMNum == -1):
+            self.IBMThread.start()
+            self.IBMNum += 1
+        else:
+            # If the first already is currently running, don't do anything 
+            if (self.recordThread.is_alive()):
+                print("Audio is already being recorded.")
+            
+            # If the thread stopped, create a new thread which will store a new wav file.
+            else:
+                self.IBMThread.join()
+                self.IBMThread = threading.Thread(target = convertIBM, args = (self.filename + str(self.recordNum)))
+                self.IBMThread.start()
+                self.IBMNum += 1
 
 
     # Takes in an input text file and rewrites it to have different sentences.
@@ -94,4 +110,4 @@ class GUI():
 
     # Creates question and answer pairs
     def makeQuestions(self):
-        generateQuestions(self.filename)r
+        generateQuestions(self.filename)

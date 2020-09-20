@@ -9,24 +9,25 @@ from collections import OrderedDict
 
 # Creates the questions and prints them to terminal
 # Returns the question answer pair to be used in the GUI
-def generateQuestions(filename):
+def generateQuestions(inputFilename):
     # Convert the filename so that it gets the right file
-    filename = "./TextFiles/" + filename + "sentences.txt"
-    
+    filename = "./TextFiles/" + inputFilename + "sentences.txt"
+    writefilename = "./TextFiles/Questions" + inputFilename + ".txt"
+    writeFile = open(writefilename, "w")
     # Get the scored keys from the sentences
     keys = generateKeywords(filename)
-    print("Printing out Keys:")
-    print(keys)
-    print("")
+    #print("Printing out Keys:")
+    #print(keys)
+    #print("")
     
     # Processes the keys and attempts to create questions from those keys
-    print("Printed Questions:")
+    #print("Printed Questions:")
     num = 1
     questionAnswer = processInput(filename, keys)
     for pair in questionAnswer:
-        print("Question " + str(num) + ": " + pair[0])
-        print("Ans: " + pair[1])
-        print("\n-------------------")
+        part1 = "Question " + str(num) + ": " + pair[0][:-1]
+        part2 = "Ans: " + pair[1]
+        writeFile.write(part1 + "\n" + part2 + "\n\n")
         num += 1
 
     return questionAnswer
@@ -134,6 +135,7 @@ def set_dictionary(sentences):
                 dictionary[word] = count
                 count += 1
     return dictionary
+
 
 def pairWords(window, text):
     pairs = []

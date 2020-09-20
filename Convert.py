@@ -3,7 +3,7 @@ import spacy
 
 # Takes in a flac file and converts it to a string and write the output
 # to a text file
-def convertIBM(filename):
+def convertIBM(nothing, filename):
     # Get the string that was converted
     print("Converting " + filename + ".flac to a .txt file")
     string = txtToSpeech("./FlacFiles/" + filename)
