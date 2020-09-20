@@ -10,8 +10,16 @@ from scipy.io.wavfile import write
 import time
 
 # Record audio for duration seconds
-def record(duration, filename):
-    print("Audio is being recorded")
+def record(duration, filename, IBMthread, threadList, index):
+    # Closes all the previous threads
+    i = 0
+    while(i < index):
+        if (not threadList[i].is_alive()):
+            threadList[i].join()
+        i = i + 1
+
+    # Indicate that audio is being recorded
+    print("Audio" + str(index) + " is being recorded")
 
     # Default Variables
     fs = 44100
@@ -23,9 +31,22 @@ def record(duration, filename):
     sd.wait()
     wavio.write("./WavFiles/" + filename + '.wav', myarray, fs, sampwidth=2)
     
+    # Prints that this recording has finished
     print("Finished recording. File saved in " + filename + ".wav")
 
+    # Converts the file to a flac
     wavToFlac(filename)
+
+    # Starts converting the created flac to a text file
+    IBMthread.start()
+
+    # Starts the next recording
+    if (index < len(threadList) - 1):
+        threadList[i + 1].start()
+    
+    # Ends IBMthread
+    IBMthread.join()
+
 
 # Plays back an audio file once recorded
 def playback(myarray):

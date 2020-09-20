@@ -8,25 +8,25 @@ import threading
 class GUI():
     def __init__(self):
         # Window dimensions
-        self.windowWidth = 200
-        self.windowHeight = 200
+        self.windowWidth = 600
+        self.windowHeight = 500
 
         # Flac file to be converted to text
         self.filename = "Audio"
 
         # Time to run the whole simulation
-        self.runDuration = 25
+        self.runDuration = 20
 
         # Duration of recording
         self.duration = 10
-        
-        # Create the thread for recording audio and converting it to a flac file.
-        self.recordThread = threading.Thread(target = record, args = (self.duration, self.filename))
-        self.recordNum = -1
 
-        # Create IBMConvert thread
-        self.IBMThread = threading.Thread(target = convertIBM, args = (None, self.filename))
-        self.IBMNum = -1
+        # Creates all the threads which will run during this program
+        self.threads = []
+        for i in range(int(self.runDuration / self.duration) + 1):
+            newFilename = self.filename + str(i)
+            IBMThread = threading.Thread(target = convertIBM, args = (None, newFilename))
+            recordThread = threading.Thread(target = record, args = (self.duration, newFilename, IBMThread, self.threads, i))
+            self.threads.append(recordThread)
 
         # Starts the application
         self.runGUI()
@@ -46,59 +46,10 @@ class GUI():
         recordButton = Button(gui, text = "Record Audio", style = 'TButton', command = self.recordAudio)
         recordButton.pack()
 
-        # Creates a text input box
-        # self.text = StringVar()
-        # textEntered = Entry(gui, width = 15, textvariable = self.text)
-        # textEntered.pack()
-
         # Runs the screen 
         gui.mainloop()
 
     # Action to perform when the button is clicked
     def recordAudio(self):
         # Starts the recording
-        if (self.recordNum == -1):
-            self.recordThread.start()
-            self.recordNum += 1
-            self.recordThread.join()
-            self.runIBMconvert()
-        
-        # If it isn't the first time recording, previous thread will need to be stopped
-        # New thread will need to be created
-        else:
-            # If the first already is currently running, don't do anything 
-            if (self.recordThread.is_alive()):
-                print("Audio is already being recorded.")
-            
-            # If the thread stopped, create a new thread which will store a new wav file.
-            else:
-                if (self.runDuration >= 0):
-                    # If its not the first run through, do this
-                    if (not (self.recordNum == 0)):
-                        self.recordThread.join()
-                        self.runDuration = self.runDuration - self.duration
-                    
-                    self.recordThread = threading.Thread(target = record, args = (self.duration, self.filename + str(self.recordNum)))
-                    self.recordThread.start()
-                    self.recordNum += 1
-                    self.runIBMconvert()
-
-    # Converts a specified audio file into its text form.
-    # File must be of form .flac for this to run
-    def runIBMconvert(self):
-        if (self.IBMNum >= self.recordNum):
-            print("You do not have any recordings which need to be converted.")
-        elif (self.IBMNum == -1):
-            self.IBMThread.start()
-            self.IBMNum += 1
-        else:
-            # If the first already is currently running, don't do anything 
-            if (self.recordThread.is_alive()):
-                print("Audio is already being recorded.")
-            
-            # If the thread stopped, create a new thread which will store a new wav file.
-            else:
-                self.IBMThread.join()
-                self.IBMThread = threading.Thread(target = convertIBM, args = (self.filename + str(self.recordNum)))
-                self.IBMThread.start()
-                self.IBMNum += 1
+        self.threads[0].start()
