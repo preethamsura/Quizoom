@@ -47,17 +47,12 @@ def record(duration, filename, IBMthread, threadList, index):
     # Ends IBMthread
     IBMthread.join()
 
-
-# Plays back an audio file once recorded
-def playback(myarray):
-    fs = 44100
-    sd.play(myarray, fs)
-
 # Converts a .wav file to .flac
 def wavToFlac(filename):
-    print("Started convert wav to flac")
+    print("Started convert " + filename + "wav to flac")
 
+    # Reads the wav file and writes it into a flac
     wav, samplerate = sf.read("./WavFiles/" + filename + '.wav')
     sf.write("./FlacFiles/" + filename + '.flac', wav, samplerate)
 
-    print("Finished converting wav to flac")
+    print("Finished converting " + filename + "wav to flac")

@@ -11,8 +11,8 @@ from collections import OrderedDict
 # Returns the question answer pair to be used in the GUI
 def generateQuestions(inputFilename):
     # Convert the filename so that it gets the right file
-    filename = "./TextFiles/" + inputFilename + "sentences.txt"
-    writefilename = "./TextFiles/Questions" + inputFilename + ".txt"
+    filename = "./SentenceFiles/" + inputFilename + ".txt"
+    writefilename = "./QuestionFiles/" + inputFilename + ".txt"
     writeFile = open(writefilename, "w")
     # Get the scored keys from the sentences
     keys = generateKeywords(filename)

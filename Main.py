@@ -1,19 +1,14 @@
-# Import the other files
-import record
-from GUI import *
-import threading
+import kivy
+from kivy.app import App
+from kivy.lang import Builder
+from KivyGUI import WelcomeScreen
 
-# Starting up the different parts of the program.
-def main():
-    # Indicate that the application started
-    print("Running Quizzoom")
+kv = Builder.load_file("app.kv")
 
-    # Creates the GUI
-    g = GUI()
+class MyApp(App):
+    
+    def build(self):
+        return kv
 
-#def multiThreading():
-#    pass
-
-# Start running the program when this file is called.
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    MyApp().run()

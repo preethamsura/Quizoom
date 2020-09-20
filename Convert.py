@@ -6,14 +6,12 @@ from GenerateQuestions import *
 # to a text file
 def convertIBM(nothing, filename):
     # Get the string that was converted
-    print("Converting " + filename + ".flac to a .txt file")
+    print("Converting " + filename + ".flac questions")
     string = txtToSpeech("./FlacFiles/" + filename)
 
     # Writes into a text file
     readFile = open("./TextFiles/" + filename + ".txt", "w")
     readFile.write(string)
-
-    print("Finished converting file to a .txt file")
 
     # Convert the file to sentences
     convertSTS(filename, string)
@@ -21,13 +19,13 @@ def convertIBM(nothing, filename):
     # Convert the sentences to questions
     generateQuestions(filename)
 
+    print("Finished converting " + filename + ".flac to questions")
+
 # Takes in a file with a single string in it. 
 # Convert the contents of that file to a multi lined sentence file. 
 def convertSTS(flacFileName, text):
-    print("Converting to sentences")
-        
     # Opening the text file to be read from and written to
-    writeFile = open("./TextFiles/" + flacFileName + "sentences.txt", "w")
+    writeFile = open("./SentenceFiles/" + flacFileName + ".txt", "w")
 
     # Convert the string to sentences
     nlp = spacy.load('en_core_web_sm')
@@ -41,5 +39,3 @@ def convertSTS(flacFileName, text):
 
     # Close the files
     writeFile.close
-
-    print("Finished Converting")
