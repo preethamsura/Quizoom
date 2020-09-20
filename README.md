@@ -22,12 +22,11 @@ Spacy python library - Sentence segmentation
 
 #
 ### Contributors
-#### Uthman Momen
-
-#### Asim Biswal 
-
-#### Nikhil Padavala 
-
-#### Preetham Sura
+<ul>
+<li>Preetham Sura</li>
+<li>Asim Biswal</li>
+<li>Uthman Momen</li>
+<li>Nikhil Padavala</li>
+</ul>
 
 Go Bears!

@@ -1,6 +1,11 @@
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize, word_tokenize 
 from rake_nltk import Rake
+import numpy as np
+import spacy
+nlp = spacy.load('en_core_web_sm')
+from spacy.lang.en.stop_words import STOP_WORDS
+from collections import OrderedDict
 
 # Creates the questions and prints them to terminal
 # Returns the question answer pair to be used in the GUI
@@ -60,5 +65,78 @@ def generateKeywords(filename):
         if score >= 2.5:
             filtered_list.append(phrase)
     return filtered_list
+
+def generateKeywords2(filename):
+    damper = 0.85
+    convg_thresh = 1e-5
+    iterations = 10
+    weights = None
+
+    for word in STOP_WORDS:
+        nlp.vocab[word].is_stop = True
+
+    
+
+    f = open(filename, "r")
+    transcript = nlp(f.read())
+    word_types = ['NOUN', 'PROPN', 'VERB']
+    filteredwords = []
+    for sentence in transcript.sents:
+        selected = []
+        for word in sentence:
+            if word.pos_ in word_types and (not word.is_stop):
+                selected.append(word)
+        filteredwords.append(selected)
+
+    dictionary = set_dictionary(filteredwords)
+    pairs = pairWords(4, filteredwords)
+
+    arr = matrix(dictionary, pairs)
+    intermediate_weights = np.ones(len(dictionary))
+    prev_rank = 0
+    for i in range(10):
+        intermediate_weights = (1 - damper) + damper * np.dot(arr, intermediate_weights)
+        if abs(prev_rank - sum(intermediate_weights)) < 
+
+
+
+def getKeyw():
+    weights = 
+
+
+def matrix(dictionary, pairs):
+    size = len(dictionary)
+    arr = np.zeros((size, size), dtype='float')
+    for word1, word2 in pairs:
+        arr[dictionary[word1]][dictionary[word2]] = 1
         
-        
+    arr = arr + arr.T - np.diag(arr.diagonal())
+    
+    col_sum = np.sum(arr, axis=0)
+    arr_norm = np.divide(arr, col_sum, where=col_sum!=0)
+    retrun arr_norm
+
+    
+
+def set_dictionary(sentences):
+    dictionary = OrderedDict()
+    count = 0
+    for sentence in sentences:
+        for word in sentence:
+            if word not in dictionary:
+                dictionary[word] = count
+                count += 1
+    return dictionary
+
+def pairWords(window, text):
+    pairs = []
+    for sentence in text:
+        i = 0
+        for word in sentence:
+            for j in range(i + 1, i + window):
+                if j < len(sentence):
+                    pair = (word, sentence[j])
+                    if pair not in pairs:
+                        pairs.append(pair)
+            i += 1
+    return pairs

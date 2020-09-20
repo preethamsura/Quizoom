@@ -3,8 +3,8 @@ from tkinter import *
 from tkinter.ttk import * 
 from record import *
 from Convert import *
-import threading
-from GenerateQuestions import *
+from SpecialThread import *
+#from GenerateQuestions import *
 
 class GUI():
     def __init__(self):
@@ -13,11 +13,15 @@ class GUI():
         self.windowHeight = 500
 
         # Flac file to be converted to text
-        self.filename = "random"
+        self.filename = "Airplane"
 
         # Duration of recording
-        self.duration = 1
+        self.duration = 10
         
+        # Create the thread for recording audio
+        self.recordThread = SpecialThread(target = record, args = (self.duration, self.filename))
+        self.recordNum = -1
+
         # Starts the application
         self.runGUI()
 
@@ -36,10 +40,6 @@ class GUI():
         recordButton = Button(gui, text = "Record Audio", style = 'TButton', command = self.recordAudio)
         recordButton.pack()
 
-        # Button to playback recording
-        playbackButton = Button(gui, text = "Playback Audio", style = 'TButton', command = self.playbackAudio)
-        playbackButton.pack()
-
         # Convert wav to flac
         flacConvertButton = Button(gui, text = "Convert wav to flac", style = 'TButton', command = self.runflacConvert)
         flacConvertButton.pack()
@@ -53,8 +53,8 @@ class GUI():
         stsButton.pack()
         
         # Take the sentences and call GenerateQuestions
-        gqButton = Button(gui, text = "Make Questions", style = 'TButton', command = self.makeQuestions)
-        gqButton.pack()
+        #gqButton = Button(gui, text = "Make Questions", style = 'TButton', command = self.makeQuestions)
+        #gqButton.pack()
 
         # Creates a text input box
         # self.text = StringVar()
@@ -67,14 +67,17 @@ class GUI():
     # Action to perform when the button is clicked
     def recordAudio(self):
         # Starts the recording
-        self.myarray = record(self.duration, self.filename)
-
-
-    # Playback the audio which was previously recorded
-    # Can only play audio after clicking record
-    def playbackAudio(self):
-        playback(self.myarray)
-
+        if (self.recordNum == -1):
+            self.recordThread.start()
+            self.recordNum += 1
+        else:
+            if (self.recordThread.is_alive()):
+                print("Audio is already being recorded.")
+            else:
+                self.recordThread.join()
+                self.recordThread = SpecialThread(target = record, args = (self.duration, self.filename + str(self.recordNum)))
+                self.recordThread.start()
+                self.recordNum += 1
 
     # Converts a specified audio file into its text form.
     # File must be of form .flac for this to run
@@ -93,5 +96,5 @@ class GUI():
 
 
     # Creates question and answer pairs
-    def makeQuestions(self):
-        generateQuestions(self.filename)
+    #def makeQuestions(self):
+    #    generateQuestions(self.filename)

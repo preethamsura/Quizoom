@@ -11,6 +11,8 @@ import time
 
 # Record audio for duration seconds
 def record(duration, filename):
+    print("Audio is being recorded")
+
     # Default Variables
     fs = 44100
     sd.default.samplerate = fs
@@ -19,9 +21,9 @@ def record(duration, filename):
     # Record the audio for duration time and save it into filename + ".wav" 
     myarray = sd.rec(int(duration * fs))
     sd.wait()
-    wavio.write(filename + '.wav', myarray, fs, sampwidth=2)
-
-    return myarray
+    wavio.write("./WavFiles/" + filename + '.wav', myarray, fs, sampwidth=2)
+    
+    print("Finished recording. File saved in " + filename + ".wav")
 
 # Plays back an audio file once recorded
 def playback(myarray):
