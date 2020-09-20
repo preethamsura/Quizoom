@@ -96,7 +96,7 @@ class QuizScreen(Screen):
 
     def __init__(self, **kwargs):
         super(Screen, self).__init__(**kwargs)
-        Clock.schedule_once(self.start_pulsing, 8)
+        Clock.schedule_once(self.start_pulsing, 12)
         Clock.schedule_interval(self.update, .5)
         self.questions = []
         self.answers = []
