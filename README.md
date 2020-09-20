@@ -9,7 +9,7 @@ In the age of online classes, keeping students' attention has become harder and 
 #
 Quizoom uses the audio from a lecture and finds keywords to generate questions automatically. Quizoom utilizes the IBM Cloud speech-to-text API to convert lectures to text which can be processed. The text is then processed using the RAKE algorithm to identify keywords relating to the lecture. Questions are generated using these keywords as answers. 
 
-![Demo](https://gph.is/g/aK7JrLl)
+![Demo](https://media.giphy.com/media/eea7tFv0fM0hgNIEZN/giphy.gif)
 
 ## How To Use It
 <ol> 
