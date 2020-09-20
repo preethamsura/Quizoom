@@ -1,0 +1,13 @@
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.3.1/en_core_web_sm-2.3.1.tar.gz
+ibm-cloud-sdk-core==1.7.3
+ibm-watson==4.7.1
+Kivy==1.11.1
+Kivy-Garden==0.1.4
+Markdown==3.2.2
+MarkupSafe==1.1.1
+numpy==1.17.2
+PySoundFile==0.9.0.post1
+scipy==1.4.1
+sounddevice==0.4.0
+spacy==2.3.2
+wavio==0.0.4

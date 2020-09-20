@@ -44,9 +44,11 @@ WindowManager:
     FloatLayout:
         TextInput:
             id: reclength
-            hint_text: "Enter Recording Length"
+            hint_text: "Enter Recording Length (Seconds)"
+        
             size_hint:(.20, .1)
             pos_hint: {"x": 0.4, "y": 0.8}
+            background_color: 0, 0, 0, .1
         Button:
             text: "Press to Start Recording"
             size_hint:(.16, .2)
@@ -72,7 +74,6 @@ WindowManager:
                 root.manager.transition.direction = "right"
 
 
-
 <QuizScreen>:
     name: "third"
     canvas:
@@ -84,23 +85,24 @@ WindowManager:
     FloatLayout:
         Label:
             text: 'Question: ' + root.questions[root.current]
-            
+            pos_hint: {"x": 0.2, "y": 0.5}  
+
         Button:
             text: "Next"
             size_hint:(.16, .2)
-            pos_hint: {"x": 0.4, "y": 0.7}
+            pos_hint: {"x": 0.1, "y": 0.1}
             background_color: 0, 0, 0, .1
             on_press: root.nextQ()
         Button:
             text: "Prev"
             size_hint:(.16, .2)
-            pos_hint: {"x": 0.4, "y": 0.4}
+            pos_hint: {"x": 0.4, "y": 0.1}
             background_color: 0, 0, 0, .1
             on_press:root.prevQ()
         Button:
             text: "Go Back"
             size_hint:(.16, .2)
-            pos_hint: {"x": 0.4, "y": 0.1}
+            pos_hint: {"x": 0.7, "y": 0.1}
             background_color: 0, 0, 0, .1
             on_release:
                 app.root.current = "main"

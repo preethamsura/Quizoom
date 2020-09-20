@@ -36,61 +36,48 @@ def generateQuestions(inputFilename):
     
 # Takes text input from file and generates questions by extracting keywords and filling with blanks. 
 def processInput(filename, keys):
+    # Gets the file and puts its text into text
     f = open(filename, "r")
     text = f.read()
+
+    # Gets the sentences
     sentenceList = sent_tokenize(text)
     questionList = []
+
+    # Extracts the keywords and creates questions
     for sentence in sentenceList:
+        # Gets the keyword for this sentence
         keyword = ""
         for phrase in keys:
             index = sentence.find(phrase)
             if index >= 0:
                 keyword = phrase
                 break
+
+        # Creates the question for the keyword (if it exists) and formats it properly
+        # Adds the question/answer pair to the list: questionList
         if (keyword != ""):
             arr = sentence.split(keyword)
             question = arr[0] + " _____ " + arr[1] + "?"
             answer = keyword
             pair = (question, answer)
             questionList.append(pair)
+
     return questionList
 
 
 # Rake implementation, generates keywords with scores based on frequency
 def generateKeywords(filename):
+    # Opens the file
     f = open(filename, "r")
+    # Creates the rake object and gets keywords by using that object
     r = Rake(min_length=1, max_length=3)
     r.extract_keywords_from_text(f.read())
     with_score = r.get_ranked_phrases_with_scores()
+
+    # Only returns keywords with a score of 2.5 or more
     filtered_list = []
     for (score, phrase) in with_score:
         if score >= 2.5:
             filtered_list.append(phrase)
     return filtered_list
-
-
-def set_dictionary(sentences):
-    dictionary = OrderedDict()
-    count = 0
-    for sentence in sentences:
-        for word in sentence:
-            if word not in dictionary:
-                dictionary[word] = count
-                count += 1
-    return dictionary
-
-
-def pairWords(window, text):
-    pairs = []
-    for sentence in text:
-        i = 0
-        for word in sentence:
-            for j in range(i + 1, i + window):
-                if j < len(sentence):
-                    pair = (word, sentence[j])
-                    if pair not in pairs:
-                        pairs.append(pair)
-                else:
-                    break
-            i += 1
-    return pairs

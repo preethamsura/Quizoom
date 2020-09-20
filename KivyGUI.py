@@ -13,10 +13,11 @@ from record import *
 from Convert import *
 import threading
     
-
+# Default filename which is going to be saved
 filename = "Audio"
 
 
+# Welcome screen. Click next to move to the actual application.
 class WelcomeScreen(Screen):
     bg_color = ObjectProperty([145/255,183/255,250/255,1])
 
@@ -28,19 +29,12 @@ class WelcomeScreen(Screen):
         anim = Animation(bg_color=[145/255,183/255,250/255,1]) + Animation(bg_color=[176/255,145/255,250/255,1])
         anim.repeat = True
         anim.start(self)
+    pass
 
-    """def __init__(self, **kwargs):
-        super(WelcomeScreen, self).__init__(**kwargs)
-        self.add_widget(Label(text='Quizoom', font_size='30sp'))
-        startButton = Button(text='Start')
-        startButton.bind(on_press=startButtonClicked)
-        self.add_widget(startButton)"""
-        
-
-
+# Screen where you can record the audio. The user can input a select time to record audio.
 class RecordScreen(Screen):
     bg_color = ObjectProperty([145/255,183/255,250/255,1])
-
+    
     def __init__(self, **kwargs):
         super(Screen, self).__init__(**kwargs)
         self.recorded = False
@@ -51,11 +45,9 @@ class RecordScreen(Screen):
         anim.repeat = True
         anim.start(self)
 
-    """def __init__(self, **kwargs):
-        super(RecordScreen, self).__init__(**kwargs)"""
-    
 
     def onClick(self):
+        global numFiles
         if self.recorded:
             print("We have already recorded. Press next to see your questions.")
             return
@@ -65,16 +57,15 @@ class RecordScreen(Screen):
         print("Audio Recording Started")
 
         # Set runDuration to the value in the text box
-        self.runDuration = int(self.ids.reclength.text)
-        self.remove_widget(self.ids.reclength)
-        self.remove_widget(self.ids.back)
+        self.runDuration = int(self.ids.reclength.text) - 1
 
         # Duration of recording
         self.duration = 10
 
         # Creates all the threads which will run during this program
         self.threads = []
-        for i in range(int(self.runDuration / self.duration) + 1):
+        numFiles = int(self.runDuration / self.duration) + 1
+        for i in range(numFiles):
             # Adds the index to the filename. 
             newFilename = filename + str(i)
 
@@ -91,6 +82,7 @@ class RecordScreen(Screen):
         self.threads[0].start()
     pass
 
+# Screen where converted questions
 class QuizScreen(Screen):
     bg_color = ObjectProperty([145/255,183/255,250/255,1])
 
@@ -101,7 +93,10 @@ class QuizScreen(Screen):
         self.answers = ['test']
         self.current = 0
         self.max = 0
-        #self.inputAnswer()
+        self.opac = .1
+    
+    def on_pre_enter(self):
+        self.inputAnswer()
 
     def start_pulsing(self, *args):
         anim = Animation(bg_color=[145/255,183/255,250/255,1]) + Animation(bg_color=[176/255,145/255,250/255,1])
@@ -117,18 +112,19 @@ class QuizScreen(Screen):
             self.current -= 1
 
     def inputAnswer(self):
-        readFile = "./TextFiles/Questionsrandom.txt"
-        file1 = open(readFile, "r")
-        self.max = int(file1.readline())
-        
-        for i in range(self.max):
-            if (i == 0):
-                self.questions[0] = file1.readline()
-                self.answers[0] = file1.readline()
-            else:
-                self.questions.append(file1.readline())
-                self.answers.append(file1.readline())
-            file1.readline()
+        for j in range(numFiles):
+            readFile = "./QuestionFiles/" + filename + str(j) + ".txt"
+            file1 = open(readFile, "r")
+            self.max = int(file1.readline())
+            self.opac = 0
+            for i in range(self.max):
+                if (i == 0):
+                    self.questions[0] = file1.readline()
+                    self.answers[0] = file1.readline()
+                else:
+                    self.questions.append(file1.readline())
+                    self.answers.append(file1.readline())
+                file1.readline()
     pass
 
 class WindowManager(ScreenManager):

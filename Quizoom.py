@@ -5,10 +5,11 @@ from KivyGUI import WelcomeScreen
 
 kv = Builder.load_file("app.kv")
 
-class MyApp(App):
+class QuizoomApp(App):
     
     def build(self):
         return kv
 
+# Creates the app as soon as we run this file
 if __name__ == '__main__':
-    MyApp().run()
+    QuizoomApp().run()
