@@ -69,7 +69,7 @@ class RecordScreen(Screen):
         print("Audio Recording Started")
 
         # Duration of recording
-        self.duration = 10
+        self.duration = 20
 
         # Creates all the threads which will run during this program
         numFiles = int(self.runDuration / self.duration) + 1
@@ -172,7 +172,7 @@ class QuizScreen(Screen):
             maxN = int(file1.readline())
             self.opac = 0
             for i in range(maxN):
-                question = "Question " + str(self.questionCount) + ": " + file1.readline()[12:]
+                question = "Question " + str(self.questionCount) + ": " + file1.readline()[12:].capitalize()
                 self.questions.append(question)
                 self.answers.append(file1.readline()[4:].strip())
                 self.questionCount = self.questionCount + 1
