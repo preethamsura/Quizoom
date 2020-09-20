@@ -84,9 +84,10 @@ WindowManager:
             size: self.size
     FloatLayout:
         Label:
-            text: 'Question: ' + root.questions[root.current]
+            id: question 
+            text: 'Question: ' + root.text
             pos_hint: {"x": 0.2, "y": 0.5}  
-
+            size_hint: (.3, .3)
         Button:
             text: "Next"
             size_hint:(.16, .2)
@@ -98,7 +99,7 @@ WindowManager:
             size_hint:(.16, .2)
             pos_hint: {"x": 0.4, "y": 0.1}
             background_color: 0, 0, 0, .1
-            on_press:root.prevQ()
+            on_press: root.prevQ()
         Button:
             text: "Go Back"
             size_hint:(.16, .2)

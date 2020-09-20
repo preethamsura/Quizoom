@@ -1,3 +1,4 @@
+# Kivy Imports
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
@@ -9,13 +10,15 @@ from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 from kivy.uix.widget import Widget
+
+# Other project imports
 from record import *
 from Convert import *
 import threading
     
 # Default filename which is going to be saved
-filename = "Audio"
-
+filename = "Quizoom"
+numFiles = 2
 
 # Welcome screen. Click next to move to the actual application.
 class WelcomeScreen(Screen):
@@ -40,12 +43,13 @@ class RecordScreen(Screen):
         self.recorded = False
         Clock.schedule_once(self.start_pulsing, 8)
 
+    # Changing background colors
     def start_pulsing(self, *args):
         anim = Animation(bg_color=[145/255,183/255,250/255,1]) + Animation(bg_color=[176/255,145/255,250/255,1])
         anim.repeat = True
         anim.start(self)
 
-
+    # Starts the audio recording upon clicking that button
     def onClick(self):
         global numFiles
         if self.recorded:
@@ -89,11 +93,12 @@ class QuizScreen(Screen):
     def __init__(self, **kwargs):
         super(Screen, self).__init__(**kwargs)
         Clock.schedule_once(self.start_pulsing, 8)
-        self.questions = ['test']
-        self.answers = ['test']
+        Clock.schedule_interval(self.update, 1)
+        self.questions = []
+        self.answers = []
         self.current = 0
-        self.max = 0
         self.opac = .1
+        self.text = ""
     
     def on_pre_enter(self):
         self.inputAnswer()
@@ -102,10 +107,19 @@ class QuizScreen(Screen):
         anim = Animation(bg_color=[145/255,183/255,250/255,1]) + Animation(bg_color=[176/255,145/255,250/255,1])
         anim.repeat = True
         anim.start(self)
+
+    def update(self, *args):
+        print(self.current)
+        if (len(self.questions) == 0):
+            self.text = ""
+        else:
+            self.text = self.questions[self.current]
+        self.ids.question.text = self.text
         
     def nextQ(self):
-        if self.current != self.max - 1:
-             self.current += 1
+        if self.current != len(self.questions) - 1:
+            print("increment")
+            self.current += 1
 
     def prevQ(self):
         if self.current != 0:
@@ -114,17 +128,14 @@ class QuizScreen(Screen):
     def inputAnswer(self):
         for j in range(numFiles):
             readFile = "./QuestionFiles/" + filename + str(j) + ".txt"
-            file1 = open(readFile, "r")
-            self.max = int(file1.readline())
+            file1 = open(readFile, "r") 
+            maxN = int(file1.readline())
             self.opac = 0
-            for i in range(self.max):
-                if (i == 0):
-                    self.questions[0] = file1.readline()
-                    self.answers[0] = file1.readline()
-                else:
-                    self.questions.append(file1.readline())
-                    self.answers.append(file1.readline())
+            for i in range(maxN):
+                self.questions.append(file1.readline())
+                self.answers.append(file1.readline())
                 file1.readline()
+        print(self.questions)
     pass
 
 class WindowManager(ScreenManager):

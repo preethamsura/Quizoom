@@ -1,0 +1,4 @@
+1
+Question 1: the university of California Berkeley is a  _____  in Berkeley California established in 1868 as the state's first land grant university.
+Ans: public research university
+

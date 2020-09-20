@@ -2,7 +2,7 @@ import kivy
 from kivy.app import App
 from kivy.lang import Builder
 from KivyGUI import WelcomeScreen
-
+from KivyGUI import WindowManager
 kv = Builder.load_file("app.kv")
 
 class QuizoomApp(App):
