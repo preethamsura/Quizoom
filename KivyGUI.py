@@ -19,6 +19,7 @@ import threading
 # Default filename which is going to be saved
 filename = "Quizoom"
 numFiles = 2
+threads = [4]
 
 # Welcome screen. Click next to move to the actual application.
 class WelcomeScreen(Screen):
@@ -51,7 +52,7 @@ class RecordScreen(Screen):
 
     # Starts the audio recording upon clicking that button
     def onClick(self):
-        global numFiles
+        global numFiles, threads
         if self.recorded:
             print("We have already recorded. Press next to see your questions.")
             return
@@ -67,9 +68,9 @@ class RecordScreen(Screen):
         self.duration = 10
 
         # Creates all the threads which will run during this program
-        self.threads = []
+        self.threads = [0]
         numFiles = int(self.runDuration / self.duration) + 1
-        for i in range(numFiles):
+        for i in range(0):
             # Adds the index to the filename. 
             newFilename = filename + str(i)
 
@@ -77,13 +78,13 @@ class RecordScreen(Screen):
             IBMThread = threading.Thread(target = convertIBM, args = (None, newFilename))
 
             # Thread which will record audio and convert it to text. It calls on the IBMThread to convert the recorded audio to text
-            recordThread = threading.Thread(target = record, args = (self.duration, newFilename, IBMThread, self.threads, i))
+            recordThread = threading.Thread(target = record, args = (self.duration, newFilename, IBMThread, threads, i + 1))
             
             # Array which stores all the threads which will eventually be run
-            self.threads.append(recordThread)
+            threads.append(recordThread)
             
         # Starts the thread which records audio
-        self.threads[0].start()
+        threads[1].start()
     pass
 
 # Screen where converted questions
@@ -93,12 +94,13 @@ class QuizScreen(Screen):
     def __init__(self, **kwargs):
         super(Screen, self).__init__(**kwargs)
         Clock.schedule_once(self.start_pulsing, 8)
-        Clock.schedule_interval(self.update, 1)
+        Clock.schedule_interval(self.update, 3)
         self.questions = []
         self.answers = []
         self.current = 0
-        self.opac = .1
         self.text = ""
+        self.read = 1
+        self.questionCount = 1
     
     def on_pre_enter(self):
         self.inputAnswer()
@@ -109,33 +111,59 @@ class QuizScreen(Screen):
         anim.start(self)
 
     def update(self, *args):
-        print(self.current)
         if (len(self.questions) == 0):
             self.text = ""
         else:
             self.text = self.questions[self.current]
-        self.ids.question.text = self.text
-        
+        self.ids.question.text = self.parseText(self.text)
+        self.inputAnswer()
+    
+    def submit(self):
+        response = self.ids.response.text.strip()
+        if self.answers[self.current] == (response):
+            self.ids.status.text = "Correct!"
+            bg_color=[48/255, 252/255, 3/255, 1]
+        else:
+            self.ids.status.text = "Incorrect :("
+            bg_color=[252/255, 53/255, 3/255, 1]
+
+    def parseText(self, text):
+        words = text.split(' ')
+        num = 0
+        output = ''
+        for word in words:
+            num += 1
+            output += word + ' '
+            if (num == 10):
+                output += '\n'
+                num = 0
+        return output
+
     def nextQ(self):
         if self.current != len(self.questions) - 1:
-            print("increment")
+            self.ids.status.text = ""
             self.current += 1
 
     def prevQ(self):
         if self.current != 0:
+            self.ids.status.text = ""
             self.current -= 1
 
+    # Takes in quiz questions as they come. These will be updated as you record.
     def inputAnswer(self):
-        for j in range(numFiles):
-            readFile = "./QuestionFiles/" + filename + str(j) + ".txt"
+        numTotal = threads[0]
+        for j in range(self.read, numTotal):
+            readFile = "./QuestionFiles/" + filename  + str(j - 1) + ".txt"
             file1 = open(readFile, "r") 
             maxN = int(file1.readline())
             self.opac = 0
             for i in range(maxN):
-                self.questions.append(file1.readline())
-                self.answers.append(file1.readline())
+                question = "Question " + str(self.questionCount) + ": " + file1.readline()[12:]
+                self.questions.append(question)
+                self.answers.append(file1.readline()[4:].strip())
+                self.questionCount = self.questionCount + 1
                 file1.readline()
-        print(self.questions)
+        self.read = numTotal
     pass
 
 class WindowManager(ScreenManager):

@@ -12,7 +12,7 @@ import time
 # Record audio for duration seconds
 def record(duration, filename, IBMthread, threadList, index):
     # Closes all the previous threads
-    i = 0
+    i = 1
     while(i < index):
         if (not threadList[i].is_alive()):
             threadList[i].join()
@@ -46,6 +46,7 @@ def record(duration, filename, IBMthread, threadList, index):
     
     # Ends IBMthread
     IBMthread.join()
+    threadList[0] = threadList[0] + 1
 
 # Converts a .wav file to .flac
 def wavToFlac(filename):

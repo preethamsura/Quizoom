@@ -15,17 +15,17 @@ WindowManager:
         Label:
             text: "Quizoom"
             font_size: "30sp"
-            size_hint:(.16, .2)
+            size_hint:(.2, .2)
             pos_hint: {"x": 0.2, "y": 0.5}
         Image:
             source: 'invertedicon.png'
-            size_hint:(.16, .2)
-            pos_hint: {"x": 0.6, "y": 0.5}
+            size_hint: (.07, 0.11)
+            pos_hint: {"x": 0.4, "y": 0.55}
         Button:
             text: "Start"
             size_hint:(.16, .1)
             background_color: 0, 0, 0, .1
-            pos_hint: {"x": 0.4, "y": 0.4}
+            pos_hint: {"x": 0.4, "y": 0.35}
             on_release:
                 app.root.current = "second"
                 root.manager.transition.direction = "left"
@@ -45,7 +45,6 @@ WindowManager:
         TextInput:
             id: reclength
             hint_text: "Enter Recording Length (Seconds)"
-        
             size_hint:(.20, .1)
             pos_hint: {"x": 0.4, "y": 0.8}
             background_color: 0, 0, 0, .1
@@ -87,16 +86,38 @@ WindowManager:
             id: question 
             text: 'Question: ' + root.text
             pos_hint: {"x": 0.2, "y": 0.5}  
-            size_hint: (.3, .3)
+            size_hint: (.3, .5)
+        Label:
+            id: status
+            text: ""
+            size_hint:(.4, .1)
+            pos_hint: {"x": 0.7, "y": 0.5}
+        TextInput:
+            id: response
+            hint_text: "Enter your response"
+            size_hint:(.4, .1)
+            pos_hint: {"x": 0.3, "y": 0.3}
+            background_color: 0, 0, 0, .1
         Button:
-            text: "Next"
+            id: submit
+            text: "Submit"
             size_hint:(.16, .2)
+            pos_hint: {"x": 0, "y": 0}
+            background_color: 0, 0, 0, .1
+            on_press: root.submit()
+        Button:
+            id: next
+            text: "Next"
+            size_hint_x: .16
+            size_hint_y: .2
             pos_hint: {"x": 0.1, "y": 0.1}
             background_color: 0, 0, 0, .1
             on_press: root.nextQ()
         Button:
+            id: prev
             text: "Prev"
-            size_hint:(.16, .2)
+            size_hint_x: .16
+            size_hint_y: .2
             pos_hint: {"x": 0.4, "y": 0.1}
             background_color: 0, 0, 0, .1
             on_press: root.prevQ()
