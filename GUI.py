@@ -4,23 +4,25 @@ from tkinter.ttk import *
 from record import *
 from Convert import *
 import threading
-from GenerateQuestions import *
 
 class GUI():
     def __init__(self):
         # Window dimensions
-        self.windowWidth = 600
-        self.windowHeight = 500
+        self.windowWidth = 200
+        self.windowHeight = 200
 
         # Flac file to be converted to text
-        self.filename = "random"
+        self.filename = "Audio"
+
+        # Time to run the whole simulation
+        self.runDuration = 25
 
         # Duration of recording
-        self.duration = 20
+        self.duration = 10
         
         # Create the thread for recording audio and converting it to a flac file.
         self.recordThread = threading.Thread(target = record, args = (self.duration, self.filename))
-        self.recordNum = 0
+        self.recordNum = -1
 
         # Create IBMConvert thread
         self.IBMThread = threading.Thread(target = convertIBM, args = (None, self.filename))
@@ -33,7 +35,7 @@ class GUI():
     def runGUI(self):
         # Create the screen
         gui = Tk()
-        gui.title("Quizzoom")
+        gui.title("Quizoom")
         gui.minsize(self.windowWidth, self.windowHeight)
 
         # Generate the button style
@@ -43,18 +45,6 @@ class GUI():
         # Creates the recording button
         recordButton = Button(gui, text = "Record Audio", style = 'TButton', command = self.recordAudio)
         recordButton.pack()
-
-        # Create the button which converts the audio from speech to text
-        flacToTextButton = Button(gui, text = "Flac to Text", style = 'TButton', command = self.runIBMconvert)
-        flacToTextButton.pack()
-
-        # Runs convert to string
-        stsButton = Button(gui, text = "String to Sentences", style = 'TButton', command = self.convertStringToSentences)
-        stsButton.pack()
-        
-        # Take the sentences and call GenerateQuestions
-        gqButton = Button(gui, text = "Make Questions", style = 'TButton', command = self.makeQuestions)
-        gqButton.pack()
 
         # Creates a text input box
         # self.text = StringVar()
@@ -70,6 +60,11 @@ class GUI():
         if (self.recordNum == -1):
             self.recordThread.start()
             self.recordNum += 1
+            self.recordThread.join()
+            self.runIBMconvert()
+        
+        # If it isn't the first time recording, previous thread will need to be stopped
+        # New thread will need to be created
         else:
             # If the first already is currently running, don't do anything 
             if (self.recordThread.is_alive()):
@@ -77,10 +72,16 @@ class GUI():
             
             # If the thread stopped, create a new thread which will store a new wav file.
             else:
-                self.recordThread.join()
-                self.recordThread = threading.Thread(target = record, args = (self.duration, self.filename + str(self.recordNum)))
-                self.recordThread.start()
-                self.recordNum += 1
+                if (self.runDuration >= 0):
+                    # If its not the first run through, do this
+                    if (not (self.recordNum == 0)):
+                        self.recordThread.join()
+                        self.runDuration = self.runDuration - self.duration
+                    
+                    self.recordThread = threading.Thread(target = record, args = (self.duration, self.filename + str(self.recordNum)))
+                    self.recordThread.start()
+                    self.recordNum += 1
+                    self.runIBMconvert()
 
     # Converts a specified audio file into its text form.
     # File must be of form .flac for this to run
@@ -101,13 +102,3 @@ class GUI():
                 self.IBMThread = threading.Thread(target = convertIBM, args = (self.filename + str(self.recordNum)))
                 self.IBMThread.start()
                 self.IBMNum += 1
-
-
-    # Takes in an input text file and rewrites it to have different sentences.
-    def convertStringToSentences(self):
-        convertSTS(self.filename)
-
-
-    # Creates question and answer pairs
-    def makeQuestions(self):
-        generateQuestions(self.filename)
