@@ -24,6 +24,7 @@ def generateQuestions(inputFilename):
     #print("Printed Questions:")
     num = 1
     questionAnswer = processInput(filename, keys)
+    writeFile.write(str(len(questionAnswer)) + "\n")
     for pair in questionAnswer:
         part1 = "Question " + str(num) + ": " + pair[0][:-1]
         part2 = "Ans: " + pair[1]

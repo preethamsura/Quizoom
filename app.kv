@@ -1,0 +1,63 @@
+WindowManager:
+    WelcomeScreen:
+    RecordScreen:
+
+<WelcomeScreen>:
+    name: "main"
+    canvas:
+        Color:
+            rgba: self.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    FloatLayout:
+        Label:
+            text: "Quizoom"
+            font_size: "30sp"
+            size_hint:(.16, .2)
+            pos_hint: {"x": 0.2, "y": 0.5}
+        Image:
+            source: 'invertedicon.png'
+            size_hint:(.16, .2)
+            pos_hint: {"x": 0.6, "y": 0.5}
+        Button:
+            text: "Start"
+            size_hint:(.16, .1)
+            background_color: 0, 0, 0, .1
+            pos_hint: {"x": 0.4, "y": 0.4}
+            on_release:
+                app.root.current = "second"
+                root.manager.transition.direction = "left"
+                
+    
+
+
+<RecordScreen>:
+    name: "second"
+    canvas:
+        Color:
+            rgba: self.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    FloatLayout:
+        Button:
+            text: "Press to Start Recording"
+            size_hint:(.16, .2)
+            pos_hint: {"x": 0.4, "y": 0.7}
+            background_color: 0, 0, 0, .1
+            on_press: root.onClick()
+        Button:
+            text: "Finish Recording"
+            size_hint:(.16, .2)
+            pos_hint: {"x": 0.24, "y": 0.4}
+            background_color: 0, 0, 0, .1
+            on_press: root.onClick()
+        Button:
+            text: "Go Back"
+            size_hint:(.16, .2)
+            pos_hint: {"x": 0.4, "y": 0.4}
+            background_color: 0, 0, 0, .1
+            on_release:
+                app.root.current = "main"
+                root.manager.transition.direction = "right"
