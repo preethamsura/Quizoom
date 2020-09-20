@@ -18,7 +18,7 @@ import threading
     
 # Default filename which is going to be saved
 filename = "Quizoom"
-threads = [4]
+threads = [1]
 
 # Welcome screen. Click next to move to the actual application.
 class WelcomeScreen(Screen):
@@ -73,7 +73,7 @@ class RecordScreen(Screen):
 
         # Creates all the threads which will run during this program
         numFiles = int(self.runDuration / self.duration) + 1
-        for i in range(0):
+        for i in range(numFiles):
             # Adds the index to the filename. 
             newFilename = filename + str(i)
 
