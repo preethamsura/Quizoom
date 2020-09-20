@@ -14,13 +14,13 @@ WindowManager:
     FloatLayout:
         Label:
             text: "Quizoom"
-            font_size: "30sp"
-            size_hint:(.2, .2)
-            pos_hint: {"x": 0.2, "y": 0.5}
+            font_size: "36sp"
+            size_hint:(.3, .2)
+            pos_hint: {"x": 0.25, "y": 0.5}
         Image:
             source: 'invertedicon.png'
             size_hint: (.07, 0.11)
-            pos_hint: {"x": 0.4, "y": 0.55}
+            pos_hint: {"x": 0.55, "y": 0.55}
         Button:
             text: "Start"
             size_hint:(.16, .1)
@@ -46,27 +46,18 @@ WindowManager:
             id: reclength
             hint_text: "Enter Recording Length (Seconds)"
             size_hint:(.20, .1)
-            pos_hint: {"x": 0.4, "y": 0.8}
+            pos_hint: {"x": 0.4, "y": 0.7}
             background_color: 0, 0, 0, .1
         Button:
-            text: "Press to Start Recording"
-            size_hint:(.16, .2)
-            pos_hint: {"x": 0.4, "y": 0.4}
+            text: "Record"
+            size_hint:(.07, .1)
+            pos_hint: {"x": 0.6, "y": 0.7}
             background_color: 0, 0, 0, .1
             on_press: root.onClick()
         Button:
-            id: back
-            text: "Go Back"
-            size_hint:(.16, .2)
-            pos_hint: {"x": 0.4, "y": 0.1}
-            background_color: 0, 0, 0, .1
-            on_release:
-                app.root.current = "main"
-                root.manager.transition.direction = "right"
-        Button:
-            text: "QUIZ!"
-            size_hint:(.16, .2)
-            pos_hint: {"x": 0.0, "y": 0.4}
+            text: "Load Quiz!"
+            size_hint:(.25, .18)
+            pos_hint: {"x": 0.4, "y": 0.3}
             background_color: 0, 0, 0, .1
             on_release:
                 app.root.current = "third"
@@ -85,7 +76,7 @@ WindowManager:
         Label:
             id: question 
             text: 'Question: ' + root.text
-            pos_hint: {"x": 0.2, "y": 0.5}  
+            pos_hint: {"x": 0.3, "y": 0.5}  
             size_hint: (.3, .5)
         Label:
             id: status
@@ -96,13 +87,13 @@ WindowManager:
             id: response
             hint_text: "Enter your response"
             size_hint:(.4, .1)
-            pos_hint: {"x": 0.3, "y": 0.3}
+            pos_hint: {"x": 0.3, "y": 0.33}
             background_color: 0, 0, 0, .1
         Button:
             id: submit
             text: "Submit"
-            size_hint:(.16, .2)
-            pos_hint: {"x": 0, "y": 0}
+            size_hint:(.12, .1)
+            pos_hint: {"x": 0.7, "y": 0.33}
             background_color: 0, 0, 0, .1
             on_press: root.submit()
         Button:
@@ -115,7 +106,7 @@ WindowManager:
             on_press: root.nextQ()
         Button:
             id: prev
-            text: "Prev"
+            text: "Previous"
             size_hint_x: .16
             size_hint_y: .2
             pos_hint: {"x": 0.4, "y": 0.1}
@@ -127,5 +118,5 @@ WindowManager:
             pos_hint: {"x": 0.7, "y": 0.1}
             background_color: 0, 0, 0, .1
             on_release:
-                app.root.current = "main"
+                app.root.current = "second"
                 root.manager.transition.direction = "right"

@@ -18,8 +18,7 @@ import threading
     
 # Default filename which is going to be saved
 filename = "Quizoom"
-numFiles = 2
-threads = [4]
+threads = [1]
 
 # Welcome screen. Click next to move to the actual application.
 class WelcomeScreen(Screen):
@@ -52,25 +51,29 @@ class RecordScreen(Screen):
 
     # Starts the audio recording upon clicking that button
     def onClick(self):
-        global numFiles, threads
+        global threads
         if self.recorded:
             print("We have already recorded. Press next to see your questions.")
             return
         
+        self.runDuration = 0
+        # Set runDuration to the value in the text box
+        try:
+            self.runDuration = int(self.ids.reclength.text.strip()) - 1
+        except ValueError:
+            print("Enter a valid input.")
+            return
+
         # Indicate that we have recorded
         self.recorded = True
         print("Audio Recording Started")
-
-        # Set runDuration to the value in the text box
-        self.runDuration = int(self.ids.reclength.text) - 1
 
         # Duration of recording
         self.duration = 10
 
         # Creates all the threads which will run during this program
-        self.threads = [0]
         numFiles = int(self.runDuration / self.duration) + 1
-        for i in range(0):
+        for i in range(numFiles):
             # Adds the index to the filename. 
             newFilename = filename + str(i)
 
@@ -94,7 +97,7 @@ class QuizScreen(Screen):
     def __init__(self, **kwargs):
         super(Screen, self).__init__(**kwargs)
         Clock.schedule_once(self.start_pulsing, 8)
-        Clock.schedule_interval(self.update, 3)
+        Clock.schedule_interval(self.update, .5)
         self.questions = []
         self.answers = []
         self.current = 0
@@ -110,6 +113,7 @@ class QuizScreen(Screen):
         anim.repeat = True
         anim.start(self)
 
+    # Update the GUI with new values every half second
     def update(self, *args):
         if (len(self.questions) == 0):
             self.text = ""
@@ -118,11 +122,21 @@ class QuizScreen(Screen):
         self.ids.question.text = self.parseText(self.text)
         self.inputAnswer()
     
+    # Submit an answer
     def submit(self):
+        # Error checking
+        if (len(self.questions) == 0):
+            print("No questions have been recorded")
+            return
+        
+        # Checks to see if our response is equal to the answer
         response = self.ids.response.text.strip()
+        # Printing correct
         if self.answers[self.current] == (response):
             self.ids.status.text = "Correct!"
             bg_color=[48/255, 252/255, 3/255, 1]
+        
+        # Printing incorrect
         else:
             self.ids.status.text = "Incorrect :("
             bg_color=[252/255, 53/255, 3/255, 1]
