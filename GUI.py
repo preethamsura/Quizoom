@@ -13,7 +13,7 @@ class GUI():
         self.windowHeight = 500
 
         # Flac file to be converted to text
-        self.filename = "airplane"
+        self.filename = "random"
 
         # Duration of recording
         self.duration = 1
